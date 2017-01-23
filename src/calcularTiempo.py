@@ -9,11 +9,12 @@ import sys
 def introDatos()-> (date, date):
     formato = "%d/%m/%Y %H:%M:%S"
 
+
     while True:
-        #fecha_desde = input("fecha(dd/mm/aaaa hh:mm:ss) de inicio del servicio: ")
-        #fecha_hasta = input("fecha (dd/mm/aaaa) de final de servicio")            
-        fecha_desde = datetime.strptime("15/02/2017 20:40:32", formato)
-        fecha_hasta = datetime.strptime("15/02/2017 20:30:32", formato)
+        fecha_desde = input("fecha(dd/mm/aaaa hh:mm:ss) de inicio del servicio: ")
+        fecha_hasta = input("fecha (dd/mm/aaaa) de final de servicio")            
+        fecha_desde = datetime.strptime(fecha_desde, formato)
+        fecha_hasta = datetime.strptime(fecha_hasta, formato)
         try:
             assert(fecha_hasta.day-fecha_desde.day <= 7 and fecha_hasta.day-fecha_desde.day >= 0 )
             if(fecha_hasta.day == fecha_desde.day and fecha_desde.month==fecha_hasta.month 
