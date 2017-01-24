@@ -39,14 +39,14 @@ def validarDiferencia(inicio , fin) -> bool:
 #funcion para validad si se cumplen los minutos minimos
 def validarMinutosMinimos(inicio , fin) -> bool:
     dif = fin - inicio
-    print(dif.seconds)
     if (dif.days == 0 and dif.seconds < MIN_SECONDS):
         return False
     return True
 
 #oobtine el proximo dia
 def obtenerManana(fecha) -> date:
-    manana = fecha + datetime.timedelta(1)
+    
+    manana = datetime(fecha.year , fecha.month , fecha.day) + timedelta(1)
     return manana
 
 #calcula el costo de las horas trabajadas
@@ -64,8 +64,8 @@ def obtenerTarifaDia(tarifas , diasemana) -> float:
 
 #Pedimos la tarifa que sera utilizada
 def PedirTarifa()-> (float,float):
-    sem = input(float("Tarifa de lunes a viernes: "))
-    fin_sem = input(float("Tarifa de Sabados y Domingos: "))
+    sem = float(input("Tarifa de lunes a viernes: "))
+    fin_sem = float(input("Tarifa de Sabados y Domingos: "))
     return(sem,fin_sem)
 
 #calcula las tarifas de las horas trabajadas cada dia
@@ -73,13 +73,17 @@ def calcularParticionado(inicio , fin , tarifas) -> float:
     suma = 0.0
     dia = datetime.weekday(inicio)
     tarifa = obtenerTarifaDia(tarifas, dia)
+    print('tarifa para hoy es ' , tarifa)
     if(inicio.day != fin.day or inicio.month != fin.month or inicio.year != fin.year):
         siguiente = obtenerManana(inicio)
         horas = tiempoServicio(inicio , siguiente)
-        suma = calcularCosto(tarifa , horas) + calcularParticionado(siguiente , fin)
+        costo = calcularCosto(tarifa , horas)
+        print('costo particion de' , inicio , ' a ' , siguiente , ' es ' , costo)
+        suma = costo + calcularParticionado(siguiente , fin , tarifas)
     else:
         horas = tiempoServicio(inicio , fin)
         suma = calcularCosto(tarifa, horas)
+    print(suma)
     return suma
  
  
@@ -92,13 +96,18 @@ if __name__ == '__main__':
         
         if(validarDiferencia(fecha_desde, fecha_hasta)):
             print('las fecha son validas')
+        else:
+            print('fecha de inicio y fin no son validas')
+            continue
         
         if(validarMinutosMinimos(fecha_desde, fecha_hasta)):
             print('la cantidad de minutos minimos es valida')
         else:
             print('la cantidad de minutos minimos no es valida')
+            continue
  
-        tarifa = PedirTarifa()
-        tot = calcularParticionado(fecha_desde,fecha_hasta, tarifa)   
-        print("fecha1: ", diaI)
-        print("fecha1: ", diaF)
+        tarifas = PedirTarifa()
+        tot = calcularParticionado(fecha_desde,fecha_hasta, tarifas)
+        #print("fecha1: ", diaI)
+        #print("fecha1: ", diaF)
+        print('Costo del servicio es: ', tot)
