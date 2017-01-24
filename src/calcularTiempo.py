@@ -5,19 +5,24 @@ Created on 23 ene. 2017
 @author: alejodiazg
 '''
 from datetime import*
-import sys
+#import sys
 
 MIN_MINUTES = 15
 MIN_SECONDS = 60 * MIN_MINUTES
 
 def introDatos()-> (date, date):
     formato = "%d/%m/%Y %H:%M:%S"
-
     fecha_desde = input("fecha(dd/mm/aaaa hh:mm:ss) de inicio del servicio: ")
     fecha_hasta = input("fecha (dd/mm/aaaa) de final de servicio")            
     fecha_desde = datetime.strptime(fecha_desde, formato)
     fecha_hasta = datetime.strptime(fecha_hasta, formato)      
     return(fecha_desde,fecha_hasta)
+
+def tiempoServicio(fecha_desde: date, fecha_hasta: date) -> int:
+    tiempoTotal = (fecha_hasta.day-fecha_desde.day)* 24
+    tiempoMinSeg = (fecha_hasta.hour + (fecha_hasta.minute/60) + ((fecha_hasta.second/60)/60))- (fecha_desde.hour+ (fecha_desde.minute/60)+ ((fecha_desde.second/60)/60)) 
+    tiempoTotal = tiempoTotal + tiempoMinSeg
+    return(tiempoTotal)
 
 
 #valida la diferencia entre dos fechas
@@ -25,17 +30,17 @@ def validarDiferencia(inicio , fin) -> bool:
     dif = fin - inicio
     if(dif.days < 0 or dif.days > 7):
         return False
-    #Hago esta verificacion por que los dias se redondean
-    #creo que es redundante
-    if(dif.seconds > 7 * 24 * 60 * 60 or dif.seconds < 0):
-        #print('Diferencia de segundos no valida')
+    if(dif.days == 7 and dif.seconds > 0):
+        return False
+    if(dif.seconds < 0):
         return False
     return True
 
 #funcion para validad si se cumplen los minutos minimos
 def validarMinutosMinimos(inicio , fin) -> bool:
     dif = fin - inicio
-    if (dif.seconds < MIN_SECONDS):
+    print(dif.seconds)
+    if (dif.days == 0 and dif.seconds < MIN_SECONDS):
         return False
     return True
 
@@ -60,16 +65,14 @@ def calcularParticionado(inicio , fin , tarifas) -> float:
     tarifa = obtenerTarifaDia(tarifas, dia)
     if(inicio.day != fin.day or inicio.month != fin.month or inicio.year != fin.year):
         siguiente = obtenerManana(inicio)
-        #horas = diferencia que hizo iri
-        #suma = calcularCosto(tarifa , horas) + calcularParticionado(siguiente , fin)
+        horas = tiempoServicio(inicio , siguiente)
+        suma = calcularCosto(tarifa , horas) + calcularParticionado(siguiente , fin)
     else:
-        suma = 0.1
-        #horas = diferencia que hizo iri
-        #suma - calcularCosto(tarifa, horas)
+        horas = tiempoServicio(inicio , fin)
+        suma = calcularCosto(tarifa, horas)
     return suma
  
 if __name__ == '__main__':
-    
     while True:
         (fecha_desde, fecha_hasta) = introDatos()
         diaI = datetime.weekday(fecha_desde)
