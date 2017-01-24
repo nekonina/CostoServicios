@@ -13,7 +13,7 @@ MIN_SECONDS = 60 * MIN_MINUTES
 def introDatos()-> (date, date):
     formato = "%d/%m/%Y %H:%M:%S"
     fecha_desde = input("fecha(dd/mm/aaaa hh:mm:ss) de inicio del servicio: ")
-    fecha_hasta = input("fecha (dd/mm/aaaa) de final de servicio")            
+    fecha_hasta = input("fecha (dd/mm/aaaa hh:mm:ss) de final de servicio")            
     fecha_desde = datetime.strptime(fecha_desde, formato)
     fecha_hasta = datetime.strptime(fecha_hasta, formato)      
     return(fecha_desde,fecha_hasta)
@@ -56,7 +56,17 @@ def calcularCosto(tarifa , horas) -> float:
 #obtiene la tarifa segun el dia de la semana
 def obtenerTarifaDia(tarifas , diasemana) -> float:
     #segun el dia de la semana obtener la tarifa
-    return 0.1
+    if (diasemana>=0 and diasemana<=4):
+        tarif = tarifas[0]
+    else:
+        tarif = tarifas[1]
+    return tarif
+
+#Pedimos la tarifa que sera utilizada
+def PedirTarifa()-> (float,float):
+    sem = input(float("Tarifa de lunes a viernes: "))
+    fin_sem = input(float("Tarifa de Sabados y Domingos: "))
+    return(sem,fin_sem)
 
 #calcula las tarifas de las horas trabajadas cada dia
 def calcularParticionado(inicio , fin , tarifas) -> float:
@@ -72,8 +82,10 @@ def calcularParticionado(inicio , fin , tarifas) -> float:
         suma = calcularCosto(tarifa, horas)
     return suma
  
+ 
 if __name__ == '__main__':
     while True:
+        
         (fecha_desde, fecha_hasta) = introDatos()
         diaI = datetime.weekday(fecha_desde)
         diaF = datetime.weekday(fecha_hasta)
@@ -85,6 +97,8 @@ if __name__ == '__main__':
             print('la cantidad de minutos minimos es valida')
         else:
             print('la cantidad de minutos minimos no es valida')
-    
+ 
+        tarifa = PedirTarifa()
+        tot = calcularParticionado(fecha_desde,fecha_hasta, tarifa)   
         print("fecha1: ", diaI)
         print("fecha1: ", diaF)
