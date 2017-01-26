@@ -11,10 +11,11 @@ class Test(unittest.TestCase):
 
 
     def setUp(self):
-       self.dia = date(2017,10,13)
-       self.tarifa_e = 2.0
-       self.horas = 2
-       self.tarifa =(2, 1)
+        self.dia = date(2017,10,13)
+        self.finagno = date(2017 , 12 , 31)
+        self.tarifa_e = 2.0
+        self.horas = 2
+        self.tarifa =(2, 1)
 
     def tearDown(self):
         pass
@@ -22,6 +23,10 @@ class Test(unittest.TestCase):
     def testDiaManana(self):
         M = obtenerManana(self.dia)
         self.failUnlessEqual(M, datetime(2017,10,14))
+
+    def test_diaManana(self):
+        M = obtenerManana(self.finagno)
+        self.failUnlessEqual(M , datetime(2018 , 1, 1))
 
     def test_calcularCosto(self):
         A = calcularCosto(self.tarifa_e,self.horas)
@@ -75,34 +80,65 @@ class Test(unittest.TestCase):
         inicio = datetime(2017,1,14,15,20)
         fin = datetime(2017,1,15,23,45)
         r =  calcularParticionado(inicio,fin,self.tarifa)
-        r1 = realidad(r)
-        self.failUnlessEqual(r1, 33)
+        self.failUnlessEqual(r, 33)
         
     #prueba para intervalo que solo tiene tiempo de dias de semana
-    def test_calcularParticionado(self):
+    def test_calcularParticionado1(self):
         inicio = datetime(2017,1,16,15,20)
         fin = datetime(2017,1,18,23,45)
         r =  calcularParticionado(inicio,fin,self.tarifa)
-        r1 = realidad(r)
-        self.failUnlessEqual(r1, 113)
+        self.failUnlessEqual(r, 114)
         
     #prueba para intervalo que agarra un dia de semana y uno de fin de semana
-    def test_calcularParticionado(self):
+    def test_calcularParticionado2(self):
         inicio = datetime(2017,1,13,15,20)
         fin = datetime(2017,1,14,23,45)
         r =  calcularParticionado(inicio,fin,self.tarifa)
-        r1 = realidad(r)
-        self.failUnlessEqual(r1, 41)
+        self.failUnlessEqual(r, 42)
         
     #prueba para intervalo que pasa de dia de semana a dia de semana pasando por el fin de semana
-    def test_calcularParticionado(self):
+    def test_calcularParticionado3(self):
         inicio = datetime(2017,1,12,15,20)
         fin = datetime(2017,1,16,23,45)
         r =  calcularParticionado(inicio,fin,self.tarifa)
-        r1 = realidad(r)
-        self.failUnlessEqual(r1, 161)
-        
-        
+        self.failUnlessEqual(r, 162)
+
+    #prueba para intervalo negativo de tiempo
+    def test_obtenerPrecio(self):
+        inicio = datetime(2017 , 1, 2)
+        fin = datetime(2017 , 1 , 1)
+        r  = calcularPrecio(self.tarifa , (inicio , fin))
+        self.failUnlessEqual(r , 0.0)
+
+    #prueba para verificar si se cumple el tiempo minimo
+    def test_obtenerPrecio1(self):
+        inicio = datetime(2017 , 1, 1 , 15 , 0)
+        fin = datetime(2017 , 1 , 1 , 15 , 14)
+        r  = calcularPrecio(self.tarifa , (inicio , fin))
+        self.failUnlessEqual(r , 0.0)
+    
+    #prueba para verificar si inicio y fin son iguales no hace fallar el programa
+    def test_obtenerPrecio2(self):
+        inicio = datetime(2017 , 1, 1)
+        fin = datetime(2017 , 1 , 1)
+        r  = calcularPrecio(self.tarifa , (inicio , fin))
+        self.failUnlessEqual(r , 0.0)
+    
+    #prueba para verificar un dia completo
+    def test_obtenerPrecio3(self):
+        inicio = datetime(2017 , 1, 1)
+        fin = datetime(2017 , 1 , 2)
+        r  = calcularPrecio(self.tarifa , (inicio , fin))
+        self.failUnlessEqual(r , 24)
+    
+    #prueba para verificar servicio de multiples dias
+    #inicia domingo tarifa 1 y finaliza lunes tarifa 2
+    def test_obtenerPrecio4(self):
+        inicio = datetime(2017 , 1, 1)
+        fin = datetime(2017 , 1 , 2 , 12 , 0)
+        r  = calcularPrecio(self.tarifa , (inicio , fin))
+        self.failUnlessEqual(r , 48)
+
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testDato']
     unittest.main()

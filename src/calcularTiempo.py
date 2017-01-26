@@ -6,6 +6,7 @@ Created on 23 ene. 2017
 '''
 from datetime import*
 #import sys
+from math import ceil
 
 MIN_MINUTES = 15
 MIN_SECONDS = 60 * MIN_MINUTES
@@ -72,31 +73,29 @@ def calcularParticionado(inicio , fin , tarifas) -> float:
     suma = 0.0
     dia = datetime.weekday(inicio)
     tarifa = obtenerTarifaDia(tarifas, dia)
-    print('tarifa para hoy es ' , tarifa)
     if(inicio.day != fin.day or inicio.month != fin.month or inicio.year != fin.year):
         siguiente = obtenerManana(inicio)
-        horas = tiempoServicio(inicio , siguiente)
-        print(horas)
+        horas = realidad(tiempoServicio(inicio , siguiente))
         costo = calcularCosto(tarifa , horas)
-        print('costo particion de' , inicio , ' a ' , siguiente , ' es ' , costo)
         suma = costo + calcularParticionado(siguiente , fin , tarifas)
     else:
-        horas = tiempoServicio(inicio , fin)
+        horas = realidad(tiempoServicio(inicio , fin))
         suma = calcularCosto(tarifa, horas)
     
-    print(suma)
     return suma
 
 #si es una hora con al menos 1 min se le suma 1 a la hora correspondiente 
 def realidad(tot) -> int:
-    entero = str(tot).split(".")
-    r = entero[0]
-    r = int(r)
-    if(entero[1]!= "0" ): 
-        r += 1
-    
-    return r
- 
+    return ceil(tot)
+
+#calcular precio
+def calcularPrecio(tarifas , tiempoDeServicio) -> float:
+    (inicio , fin) = tiempoDeServicio
+    if(validarDiferencia(inicio, fin) and validarMinutosMinimos(inicio, fin)):
+        return calcularParticionado(inicio, fin, tarifas)
+    return 0.0
+
+
 if __name__ == '__main__':
     while True:
         
@@ -104,6 +103,8 @@ if __name__ == '__main__':
         diaI = datetime.weekday(fecha_desde)
         diaF = datetime.weekday(fecha_hasta)
         
+        
+        print(tiempoServicio(diaI, diaF))
         if(validarDiferencia(fecha_desde, fecha_hasta)):
             print('las fecha son validas')
         else:
@@ -118,6 +119,5 @@ if __name__ == '__main__':
  
         tarifas = PedirTarifa()
         tot = calcularParticionado(fecha_desde,fecha_hasta, tarifas)
-        tt = realidad(tot)
         
         print('Costo del servicio es: ', tt)
