@@ -76,15 +76,26 @@ def calcularParticionado(inicio , fin , tarifas) -> float:
     if(inicio.day != fin.day or inicio.month != fin.month or inicio.year != fin.year):
         siguiente = obtenerManana(inicio)
         horas = tiempoServicio(inicio , siguiente)
+        print(horas)
         costo = calcularCosto(tarifa , horas)
         print('costo particion de' , inicio , ' a ' , siguiente , ' es ' , costo)
         suma = costo + calcularParticionado(siguiente , fin , tarifas)
     else:
         horas = tiempoServicio(inicio , fin)
         suma = calcularCosto(tarifa, horas)
+    
     print(suma)
     return suma
- 
+
+#si es una hora con al menos 1 min se le suma 1 a la hora correspondiente 
+def realidad(tot) -> int:
+    entero = str(tot).split(".")
+    r = entero[0]
+    r = int(r)
+    if(entero[1]!= "0" ): 
+        r += 1
+    
+    return r
  
 if __name__ == '__main__':
     while True:
@@ -107,6 +118,6 @@ if __name__ == '__main__':
  
         tarifas = PedirTarifa()
         tot = calcularParticionado(fecha_desde,fecha_hasta, tarifas)
-        #print("fecha1: ", diaI)
-        #print("fecha1: ", diaF)
-        print('Costo del servicio es: ', tot)
+        tt = realidad(tot)
+        
+        print('Costo del servicio es: ', tt)
