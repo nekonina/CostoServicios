@@ -104,28 +104,28 @@ class Test(unittest.TestCase):
         self.failUnlessEqual(r, 162)
 
     #prueba para intervalo negativo de tiempo
-    def test_obtenerPrecio(self):
+    def test_calcularPrecio(self):
         inicio = datetime(2017 , 1, 2)
         fin = datetime(2017 , 1 , 1)
         r  = calcularPrecio(self.tarifa , (inicio , fin))
         self.failUnlessEqual(r , 0.0)
 
     #prueba para verificar si se cumple el tiempo minimo
-    def test_obtenerPrecio1(self):
+    def test_calcularPrecio1(self):
         inicio = datetime(2017 , 1, 1 , 15 , 0)
         fin = datetime(2017 , 1 , 1 , 15 , 14)
         r  = calcularPrecio(self.tarifa , (inicio , fin))
         self.failUnlessEqual(r , 0.0)
     
     #prueba para verificar si inicio y fin son iguales no hace fallar el programa
-    def test_obtenerPrecio2(self):
+    def test_calcularPrecio2(self):
         inicio = datetime(2017 , 1, 1)
         fin = datetime(2017 , 1 , 1)
         r  = calcularPrecio(self.tarifa , (inicio , fin))
         self.failUnlessEqual(r , 0.0)
     
     #prueba para verificar un dia completo
-    def test_obtenerPrecio3(self):
+    def test_calcularPrecio3(self):
         inicio = datetime(2017 , 1, 1)
         fin = datetime(2017 , 1 , 2)
         r  = calcularPrecio(self.tarifa , (inicio , fin))
@@ -133,7 +133,7 @@ class Test(unittest.TestCase):
     
     #prueba para verificar servicio de multiples dias
     #inicia domingo tarifa 1 y finaliza lunes tarifa 2
-    def test_obtenerPrecio4(self):
+    def test_calcularPrecio4(self):
         inicio = datetime(2017 , 1, 1)
         fin = datetime(2017 , 1 , 2 , 12 , 0)
         r  = calcularPrecio(self.tarifa , (inicio , fin))
