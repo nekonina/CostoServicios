@@ -45,7 +45,6 @@ def validarMinutosMinimos(inicio , fin) -> bool:
 
 #oobtine el proximo dia
 def obtenerManana(fecha) -> date:
-    
     manana = datetime(fecha.year , fecha.month , fecha.day) + timedelta(1)
     return manana
 
